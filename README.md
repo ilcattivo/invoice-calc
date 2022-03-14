@@ -1,5 +1,8 @@
 # vue-invoice-calc
 
+## Online Demo
+[Link](https://codesandbox.io/s/gifted-clarke-0ojt29)
+
 This template should help get you started developing with Vue 3 in Vite.
 
 ## Recommended IDE Setup
