@@ -5,7 +5,7 @@ export default Vue.extend({
   props: {
     value: {
       type: [String, Number],
-      default: false
+      default: '',
     },
   },
 });
@@ -16,6 +16,6 @@ export default Vue.extend({
     v-bind="$attrs"
     :value="value"
     class="border border-black rounded p-2"
-    @input="$emit('input', $event.target.value)"
+    @input="$emit('input', ($event.target as HTMLInputElement).value)"
   />
 </template>

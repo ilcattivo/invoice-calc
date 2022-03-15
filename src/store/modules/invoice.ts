@@ -7,7 +7,7 @@ import store, { PERSISTANCE_KEY } from '../index';
   name: 'invoice',
   preserveState: localStorage.getItem(PERSISTANCE_KEY) !== null,
   store,
-  dynamic: true
+  dynamic: true,
 })
 class Invoice extends VuexModule {
   products: Product[] = [];

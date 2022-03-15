@@ -25,10 +25,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
 import BaseInput from './base/BaseInput.vue';
 import BaseButton from './base/BaseButton.vue';
-import invoice from '@/store/modules/invoice'
+import invoice from '@/store/modules/invoice';
 
 const initialState = {
   name: '',
@@ -50,7 +50,7 @@ export default Vue.extend({
     return {
       product: { ...initialState },
       formError: '',
-    }
+    };
   },
 
   methods: {
@@ -89,7 +89,7 @@ export default Vue.extend({
       handler() {
         this.formError = '';
       },
-    }
+    },
   },
 });
 </script>

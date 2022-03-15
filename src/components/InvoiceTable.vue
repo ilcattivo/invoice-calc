@@ -59,11 +59,11 @@ export default Vue.extend({
   components: { BaseButton, BaseCheckbox },
 
   data(): {
-    checkedProductIds: string[],
+    checkedProductIds: string[];
   } {
     return {
       checkedProductIds: [],
-    }
+    };
   },
 
   computed: {

@@ -3,7 +3,7 @@
     :checked="value"
     type="checkbox"
     class="base-checkbox"
-    @change="$emit('input', $event.target.checked)"
+    @change="$emit('input', ($event.target as HTMLInputElement).checked)"
   />
 </template>
 
@@ -14,7 +14,7 @@ export default Vue.extend({
   props: {
     value: {
       type: Boolean,
-      default: false
+      default: false,
     },
   },
 });
