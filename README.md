@@ -1,4 +1,4 @@
-# vue2invoice
+# Invoice Calculator (Vue 2 + Typescript + Vuex)
 
 This template should help get you started developing with Vue 2 in Vite.
 
