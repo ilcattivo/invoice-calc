@@ -1,16 +1,14 @@
-<script setup lang="ts">
-withDefaults(
-  defineProps<{
-    disabled?: boolean;
-  }>(),
-  {
-    disabled: false,
-  }
-);
+<script lang="ts">
+import Vue from 'vue';
 
-defineEmits<{
-  (e: 'click'): void;
-}>();
+export default Vue.extend({
+  props: {
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+  },
+});
 </script>
 
 <template>

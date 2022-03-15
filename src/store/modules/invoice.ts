@@ -1,14 +1,16 @@
 import type { Product } from '@/types';
-import { Module, VuexModule, Mutation } from 'vuex-module-decorators';
+import { Module, VuexModule, Mutation, getModule } from 'vuex-module-decorators';
 import { v4 as uuidv4 } from 'uuid';
+import store, { PERSISTANCE_KEY } from '../index';
 
-@Module({ name: 'invoice', preserveState: true })
-export default class Invoice extends VuexModule {
+@Module({
+  name: 'invoice',
+  preserveState: localStorage.getItem(PERSISTANCE_KEY) !== null,
+  store,
+  dynamic: true
+})
+class Invoice extends VuexModule {
   products: Product[] = [];
-
-  get allProducts() {
-    return this.products;
-  }
 
   @Mutation
   addProduct(product: Omit<Product, 'id'>) {
@@ -22,3 +24,5 @@ export default class Invoice extends VuexModule {
     this.products = this.products.filter(product => !ids.includes(product.id));
   }
 }
+
+export default getModule(Invoice);

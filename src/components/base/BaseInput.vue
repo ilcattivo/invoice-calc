@@ -1,20 +1,21 @@
-<script setup lang="ts">
-type Props = {
-  modelValue: string | number;
-};
+<script lang="ts">
+import Vue from 'vue';
 
-defineProps<Props>();
-
-defineEmits<{
-  (e: 'update:modelValue', value: string | number): void;
-}>();
+export default Vue.extend({
+  props: {
+    value: {
+      type: [String, Number],
+      default: false
+    },
+  },
+});
 </script>
 
 <template>
   <input
     v-bind="$attrs"
-    :value="modelValue"
+    :value="value"
     class="border border-black rounded p-2"
-    @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
+    @input="$emit('input', $event.target.value)"
   />
 </template>

@@ -1,52 +1,3 @@
-<script setup lang="ts">
-import { reactive, ref, watch } from 'vue';
-import BaseInput from './base/BaseInput.vue';
-import BaseButton from './base/BaseButton.vue';
-import { useAppStore } from '@/store';
-
-const invoice = useAppStore('invoice');
-
-const initialState = {
-  name: '',
-  price: '',
-  quantity: '',
-};
-
-const product = reactive({ ...initialState });
-
-const formError = ref('');
-
-const validateForm = (): boolean => {
-  const unfilledField = Object.entries(product).find(([_fieldName, value]) => !value);
-
-  if (unfilledField) {
-    const [fieldName] = unfilledField;
-    formError.value = `Please fill in product ${fieldName}`;
-    return false;
-  }
-
-  return true;
-};
-
-watch(product, () => {
-  formError.value = '';
-});
-
-const addProduct = () => {
-  const isValid = validateForm();
-
-  if (!isValid) return;
-
-  invoice.addProduct({
-    name: product.name,
-    price: parseFloat(product.price),
-    quantity: parseInt(product.quantity),
-  });
-
-  Object.assign(product, initialState);
-};
-</script>
-
 <template>
   <div class="mb-2">
     <form class="flex" @submit.prevent="addProduct">
@@ -72,3 +23,73 @@ const addProduct = () => {
     <p class="mt-1">{{ formError }}</p>
   </div>
 </template>
+
+<script lang="ts">
+import Vue from 'vue'
+import BaseInput from './base/BaseInput.vue';
+import BaseButton from './base/BaseButton.vue';
+import invoice from '@/store/modules/invoice'
+
+const initialState = {
+  name: '',
+  price: '',
+  quantity: '',
+};
+
+export default Vue.extend({
+  components: { BaseInput, BaseButton },
+
+  props: {
+    value: {
+      type: Boolean,
+      default: false,
+    },
+  },
+
+  data() {
+    return {
+      product: { ...initialState },
+      formError: '',
+    }
+  },
+
+  methods: {
+    validateForm() {
+      const unfilledField = Object.entries(this.product).find(([_fieldName, value]) => !value);
+
+      if (unfilledField) {
+        const [fieldName] = unfilledField;
+        this.formError = `Please fill in product ${fieldName}`;
+        return false;
+      }
+
+      return true;
+    },
+
+    addProduct() {
+      const isValid = this.validateForm();
+
+      if (!isValid) return;
+
+      const { product } = this;
+
+      invoice.addProduct({
+        name: product.name,
+        price: parseFloat(product.price),
+        quantity: parseInt(product.quantity),
+      });
+
+      Object.assign(this.product, initialState);
+    },
+  },
+
+  watch: {
+    product: {
+      deep: true,
+      handler() {
+        this.formError = '';
+      },
+    }
+  },
+});
+</script>

@@ -1,18 +1,21 @@
-<script setup lang="ts">
-defineProps<{
-  modelValue: boolean;
-}>();
-
-defineEmits<{
-  (e: 'update:modelValue', value: boolean): void;
-}>();
-</script>
-
 <template>
   <input
-    :checked="modelValue"
+    :checked="value"
     type="checkbox"
     class="base-checkbox"
-    @change="$emit('update:modelValue', ($event.target as HTMLInputElement).checked)"
+    @change="$emit('input', $event.target.checked)"
   />
 </template>
+
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
+  props: {
+    value: {
+      type: Boolean,
+      default: false
+    },
+  },
+});
+</script>

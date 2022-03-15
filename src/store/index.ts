@@ -1,25 +1,17 @@
-import { createStore } from 'vuex';
+import Vue from 'vue';
+import Vuex from 'vuex';
 import VuexPersistence from 'vuex-persist';
-import { getModule } from 'vuex-module-decorators';
-import Invoice from './modules/invoice';
 
-const modules = {
-  invoice: Invoice,
-} as const;
+Vue.use(Vuex);
 
-type StoreModule = keyof typeof modules;
+export const PERSISTANCE_KEY = 'vuex';
 
 const vuexLocal = new VuexPersistence({
-  storage: window.localStorage,
+  key: PERSISTANCE_KEY,
 });
 
-const store = createStore({
-  modules,
+const store = new Vuex.Store({
   plugins: [vuexLocal.plugin],
 });
-
-export const useAppStore = (moduleName: StoreModule) => {
-  return getModule(modules[moduleName], store);
-};
 
 export default store;

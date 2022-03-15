@@ -1,44 +1,3 @@
-<script setup lang="ts">
-import { computed, ref } from 'vue';
-import { useAppStore } from '@/store';
-import formatPrice from '@/helpers/formatPrice';
-import BaseButton from './base/BaseButton.vue';
-import BaseCheckbox from './base/BaseCheckbox.vue';
-
-const invoiceStore = useAppStore('invoice');
-
-const products = computed(() => invoiceStore.allProducts);
-
-const totalPrice = computed(() => {
-  return products.value.reduce((accum, value) => {
-    return accum + value.price * value.quantity;
-  }, 0);
-});
-
-const checkedProductIds = ref<string[]>([]);
-
-const deleteProducts = () => {
-  invoiceStore.deleteProductsById(checkedProductIds.value);
-  checkedProductIds.value = [];
-};
-
-const onProductCheck = (checked: boolean, targetId: string): void => {
-  if (checked) {
-    checkedProductIds.value.push(targetId);
-  } else {
-    checkedProductIds.value = checkedProductIds.value.filter(productId => productId !== targetId);
-  }
-};
-
-const areAllProductsChecked = computed(() => {
-  return products.value.length > 0 && products.value.length === checkedProductIds.value.length;
-});
-
-const onAllProductCheck = (checked: boolean): void => {
-  checkedProductIds.value = checked ? products.value.map(product => product.id) : [];
-};
-</script>
-
 <template>
   <table class="invoice-table">
     <thead>
@@ -46,8 +5,8 @@ const onAllProductCheck = (checked: boolean): void => {
         <th class="w-16">
           <BaseCheckbox
             :disabled="products.length === 0"
-            :modelValue="areAllProductsChecked"
-            @update:modelValue="onAllProductCheck"
+            :value="areAllProductsChecked"
+            @input="onAllProductCheck"
           />
         </th>
         <th class="w-52">Product name</th>
@@ -65,8 +24,8 @@ const onAllProductCheck = (checked: boolean): void => {
       <tr v-for="product of products" :key="product.id">
         <td>
           <BaseCheckbox
-            :modelValue="checkedProductIds.includes(product.id)"
-            @update:modelValue="onProductCheck($event, product.id)"
+            :value="checkedProductIds.includes(product.id)"
+            @input="onProductCheck($event, product.id)"
           />
         </td>
         <td>{{ product.name }}</td>
@@ -88,6 +47,63 @@ const onAllProductCheck = (checked: boolean): void => {
     </tfoot>
   </table>
 </template>
+
+<script lang="ts">
+import Vue from 'vue';
+import formatPrice from '@/helpers/formatPrice';
+import BaseButton from './base/BaseButton.vue';
+import BaseCheckbox from './base/BaseCheckbox.vue';
+import invoice from '@/store/modules/invoice';
+
+export default Vue.extend({
+  components: { BaseButton, BaseCheckbox },
+
+  data(): {
+    checkedProductIds: string[],
+  } {
+    return {
+      checkedProductIds: [],
+    }
+  },
+
+  computed: {
+    products() {
+      return invoice.products;
+    },
+
+    totalPrice(): number {
+      return this.products.reduce((accum, value) => {
+        return accum + value.price * value.quantity;
+      }, 0);
+    },
+
+    areAllProductsChecked(): boolean {
+      return this.products.length > 0 && this.products.length === this.checkedProductIds.length;
+    },
+  },
+
+  methods: {
+    formatPrice,
+
+    deleteProducts(): void {
+      invoice.deleteProductsById(this.checkedProductIds);
+      this.checkedProductIds = [];
+    },
+
+    onProductCheck(checked: boolean, targetId: string): void {
+      if (checked) {
+        this.checkedProductIds.push(targetId);
+      } else {
+        this.checkedProductIds = this.checkedProductIds.filter(productId => productId !== targetId);
+      }
+    },
+
+    onAllProductCheck(checked: boolean): void {
+      this.checkedProductIds = checked ? this.products.map(product => product.id) : [];
+    },
+  },
+});
+</script>
 
 <style lang="scss" scoped>
 $cell-border: 1px solid black;

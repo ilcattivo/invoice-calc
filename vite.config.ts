@@ -1,15 +1,28 @@
-import { fileURLToPath, URL } from 'url';
+import { fileURLToPath } from 'url'
 
-import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
-import VueTypeImports from 'vite-plugin-vue-type-imports';
+import { defineConfig } from 'vite'
+import legacy from '@vitejs/plugin-legacy'
+import { createVuePlugin as vue2 } from 'vite-plugin-vue2'
+// @ts-ignore
+import vueTemplateBabelCompiler from 'vue-template-babel-compiler'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(), VueTypeImports()],
+  plugins: [
+    vue2({
+      jsx: true,
+      vueTemplateOptions: {
+        compiler: vueTemplateBabelCompiler
+      }
+    }),
+    legacy({
+      targets: ['ie >= 11'],
+      additionalLegacyPolyfills: ['regenerator-runtime/runtime']
+    })
+  ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
-    },
-  },
-});
+      '@': fileURLToPath(new URL('./src', import.meta.url))
+    }
+  }
+})
